@@ -1,0 +1,16 @@
+transaction_id,date,type,category,amount,needs_review
+txn_1001,2026-08-03,purchase,Food & beverage,1842.17,false
+txn_1002,2026-08-03,deposit,Delivery sales,-2210.45,false
+txn_1003,2026-08-03,purchase,Repairs & maintenance,146.88,false
+txn_1004,2026-08-04,deposit,Card sales,-6120.30,false
+txn_1005,2026-08-04,purchase,Food & beverage,977.60,false
+txn_1006,2026-08-04,purchase,Uncategorized,84.12,true
+txn_1007,2026-08-05,purchase,Utilities,1288.40,false
+txn_1008,2026-08-05,purchase,Smallwares & supplies,412.75,false
+txn_1009,2026-08-05,deposit,Card sales,-5877.10,false
+txn_1010,2026-08-06,purchase,Cleaning & supplies,233.00,false
+txn_1011,2026-08-06,purchase,Software,139.99,false
+txn_1012,2026-08-06,deposit,Delivery sales,-1430.22,false
+txn_1013,2026-08-07,purchase,Food & beverage,655.30,false
+txn_1014,2026-08-07,purchase,Utilities,219.90,false
+txn_1015,2026-08-07,purchase,Hiring,300.00,false

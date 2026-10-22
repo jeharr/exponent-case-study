@@ -1,0 +1,21 @@
+{
+  "name": "exponent-case-study",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Transaction feed categorization with replay-safe SQLite persistence",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/cli.ts",
+    "test": "node --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "csv-parse": "^7.0.3",
+    "csv-stringify": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2"
+  }
+}

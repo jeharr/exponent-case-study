@@ -1,0 +1,9 @@
+node_modules/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite-journal
+ledger_lines.csv
+*.tmp
+*.tsbuildinfo
+.DS_Store
