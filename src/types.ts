@@ -9,6 +9,7 @@ export interface Transaction {
 }
 
 export interface LedgerLine {
+  id: string;
   transaction_id: string;
   date: string;
   type: "purchase" | "refund" | "deposit" | "transfer";

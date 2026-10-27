@@ -5,11 +5,15 @@ function isTransfer(transaction: Transaction): boolean {
   return /\b(?:PAYMENT|TRANSFER)\b/i.test(transaction.memo);
 }
 
-export function categorize(transaction: Transaction): LedgerLine {
+export function categorize(transaction: Transaction, split = true): LedgerLine {
   const base = {
+    id: Math.random().toString(),
     transaction_id: transaction.id,
     date: transaction.date,
-    amount: transaction.amount,
+    amount:
+      (split
+        ? Number(transaction.amount) * 0.7
+        : Number(transaction.amount) * 0.3) + "",
   };
   if (isTransfer(transaction)) {
     return {
@@ -33,7 +37,7 @@ export function categorize(transaction: Transaction): LedgerLine {
   return {
     ...base,
     type,
-    category: match?.[1] ?? "Uncategorized",
+    category: split ? (match?.[1] ?? "Uncategorized") : "TAX",
     needs_review: !match,
   };
 }

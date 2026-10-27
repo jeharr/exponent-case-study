@@ -5,6 +5,8 @@ out-of-order syncs, and atomic database writes. No server required.
 
 Requires Node.js 24+ and npm. From this folder:
 
+Note: before running a new test, either delete the local ledger.sqlite db file or increment the sync_batch on each transaction, otherwise, new changes will not reflect.
+
 ```sh
 npm install
 npm start

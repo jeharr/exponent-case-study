@@ -32,9 +32,11 @@ export function openStore(path: string): DatabaseSync {
         amount TEXT NOT NULL
       ) STRICT;
       CREATE TABLE IF NOT EXISTS ledger_lines (
-        transaction_id TEXT NOT NULL PRIMARY KEY REFERENCES transactions(id),
+        id TEXT NOT NULL PRIMARY KEY,
+        transaction_id TEXT NOT NULL REFERENCES transactions(id),
         type TEXT NOT NULL CHECK (type IN ('purchase', 'refund', 'deposit', 'transfer')),
         category TEXT NOT NULL,
+        amount TEXT NOT NULL,
         needs_review INTEGER NOT NULL CHECK (needs_review IN (0, 1))
       ) STRICT;
     `),
@@ -82,10 +84,10 @@ export function importTransactions(
       WHERE excluded.sync_batch > transactions.sync_batch
     `);
     const saveLedger = db.prepare(`
-      INSERT INTO ledger_lines (transaction_id, type, category, needs_review)
-      VALUES (?, ?, ?, ?)
-      ON CONFLICT(transaction_id) DO UPDATE SET
-        type = excluded.type, category = excluded.category, needs_review = excluded.needs_review
+      INSERT INTO ledger_lines (id,transaction_id, type, category, amount, needs_review)
+      VALUES (?,?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        type = excluded.type, category = excluded.category, amount = excluded.amount, needs_review = excluded.needs_review
     `);
 
     // Map iteration preserves each ID's first appearance, even if its winner is later.
@@ -120,6 +122,7 @@ export function importTransactions(
       }
 
       const line = categorize(winner);
+      const splitledgerLine = categorize(winner, false);
       saveSource.run(
         id,
         winner.sync_batch,
@@ -129,7 +132,22 @@ export function importTransactions(
         winner.memo,
         winner.amount,
       );
-      saveLedger.run(id, line.type, line.category, Number(line.needs_review));
+      saveLedger.run(
+        line.id,
+        line.transaction_id,
+        line.type,
+        line.category,
+        (Number(winner.amount) * 0.7).toFixed(2),
+        Number(line.needs_review),
+      );
+      saveLedger.run(
+        splitledgerLine.id,
+        splitledgerLine.transaction_id,
+        splitledgerLine.type,
+        splitledgerLine.category,
+        (Number(winner.amount) * 0.3).toFixed(2),
+        Number(splitledgerLine.needs_review),
+      );
       if (stored) stats.updated++;
       else stats.inserted++;
       stats.unchanged += newest.length - 1;
@@ -142,7 +160,7 @@ export function readLedger(db: DatabaseSync): LedgerLine[] {
   const rows = db
     .prepare(
       `
-    SELECT t.id AS transaction_id, t.date, l.type, l.category, t.amount, l.needs_review
+    SELECT t.id AS transaction_id, t.date, l.type, l.category, l.amount, l.needs_review
     FROM transactions t JOIN ledger_lines l ON l.transaction_id = t.id
     ORDER BY t.position
   `,
